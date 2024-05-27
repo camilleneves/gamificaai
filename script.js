@@ -2,7 +2,7 @@ let menu = document.getElementById("menu")
 let iconeBarras = document.getElementById("icone-barras")
 let iconeX = document.getElementById("icone-x")
 
-function abreFechaMenu() {    
+function abreFechaMenu() {
     // Menu fechado - tem a classe menu-fechado
     // Menu aberto - não tem a classe menu-fechado
 
@@ -10,7 +10,7 @@ function abreFechaMenu() {
     // menu.classList.toggle("menu-fechado")
 
     // Se o menu contem a classe menu-fechado
-    if ( menu.classList.contains("menu-fechado") ) {
+    if (menu.classList.contains("menu-fechado")) {
         // Abrir o menu - remover a classe menu-fechado
         menu.classList.remove("menu-fechado")
 
@@ -74,7 +74,7 @@ function mostrarProximoSlide() {
 
     if (slideAtual < 2) {
         // Somar 1 na variavel slideAtual
-        slideAtual++        
+        slideAtual++
     } else {
         // Voltar para o primeiro banner
         slideAtual = 0
@@ -103,7 +103,7 @@ function mostrarSlideAnterior() {
 function selecionarSlide(indiceSlide) {
     // Remove o slide atual
     banner.classList.remove(slides[slideAtual])
-    
+
     // Atualiza a variavel com o indice de slide selecionado
     slideAtual = indiceSlide
 
@@ -114,7 +114,7 @@ function selecionarSlide(indiceSlide) {
 
 // Carregamento dinâmico dos cases
 let listaCases = [
-    
+
 ]
 
 function renderizarCases() {
@@ -128,8 +128,8 @@ function renderizarCases() {
     listaCases.forEach(cardCase => {
         // Montar o html do card, passando os atributos do case
         template += `<div class="card">
-            <img src=${ cardCase.imagem } alt="">
-            <p>${ cardCase.descricao }</p>
+            <img src=${cardCase.imagem} alt="">
+            <p>${cardCase.descricao}</p>
             <button>Ver mais</button>
         </div>`
     })
@@ -137,5 +137,54 @@ function renderizarCases() {
     // Inserir html dos cases montados no elemento container-cards
     containerCards.innerHTML = template
 }
+
+function carregarCases() {
+    fetch("http://localhost:3000/cases")
+        .then((resposta) => resposta.json())
+        .then((dadosTratados) => {
+            console.log(dadosTratados)
+            listaCases = dadosTratados
+            renderizarCases()
+        })
+}
+
+function solicitarOrcamento(event) {
+    let valorNome = document.getElementById("campo-nome").value
+    let valorEmail = document.getElementById("campo-email").value
+    let valorDescricao = document.getElementById("campo-texto").value
+
+    
+    let dadosForm = {
+        nome: valorNome, 
+        email: valorEmail,
+        descricao: valorDescricao
+    }
+
+    console.log(dadosForm)
+
+    fetch("http://localhost:3000/solicitacoes", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(dadosForm)
+    })
+
+    .then(resposta => {
+        console.log(resposta);
+       
+        document. querySelector("#contato form").reset()
+
+        alert("Solicitacao enviada com sucesso!!!")
+    })
+
+    .catch(erro => {
+        console.log(erro);
+        alert("Erro na requisicao!")
+    })
+
+    event.preventDefault()
+}
+
 
 
